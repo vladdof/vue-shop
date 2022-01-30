@@ -48,6 +48,7 @@
             class="form"
             action="#"
             method="POST"
+            @submit.prevent="addToCart"
           >
             <b class="item__price">
               {{ product.price | numberFormat }} ₽
@@ -168,6 +169,7 @@
                 </button>
 
                 <input
+                  v-model.number="productAmount"
                   type="text"
                   value="1"
                   name="count"
@@ -302,12 +304,28 @@ export default {
   filters: {
     numberFormat,
   },
+  data() {
+    return {
+      productAmount: 1,
+    };
+  },
   computed: {
     product() {
       return products.find((product) => product.id === +this.$route.params.id);
     },
     category() {
       return categories.find((category) => category.id === this.product.categoryId);
+    },
+  },
+  methods: {
+    addToCart() {
+      this.$store.commit(
+        'addProductToCart',
+        {
+          productId: this.product.id,
+          amount: this.productAmount,
+        },
+      );
     },
   },
 };
