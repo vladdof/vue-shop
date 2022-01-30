@@ -1,12 +1,11 @@
 <template>
   <li class="catalog__item">
-    <a
+    <router-link
       class="catalog__pic"
-      href="#"
-      @click.prevent="goToPage('product', { id: item.id })"
+      :to="{ name: 'product', params: { id: item.id } }"
     >
       <img :src="`img/${item.image}`" :alt="item.title">
-    </a>
+    </router-link>
 
     <h3 class="catalog__title">
       <a href="#">
@@ -23,7 +22,6 @@
 </template>
 
 <script>
-import goToPage from '@/helpers/goToPage';
 import numberFormat from '@/helpers/numberFormat';
 import ColorsList from '../colors-list/colors-list.vue';
 
@@ -40,9 +38,6 @@ export default {
   },
   filters: {
     numberFormat,
-  },
-  methods: {
-    goToPage,
   },
 };
 </script>
