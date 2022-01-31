@@ -4,7 +4,7 @@
       class="catalog__pic"
       :to="{ name: 'product', params: { id: item.id } }"
     >
-      <img :src="`img/${item.image}`" :alt="item.title">
+      <img :src="item.image" :alt="item.title">
     </router-link>
 
     <h3 class="catalog__title">

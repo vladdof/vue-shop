@@ -43,11 +43,11 @@
           >
             <option value="0">Все категории</option>
             <option
-              v-for="{ id, title } in categories"
-              :key="id"
-              :value="id"
+              v-for="(category, idx) in categories"
+              :key="idx"
+              :value="category"
             >
-              {{ title }}
+              {{ category }}
             </option>
           </select>
         </label>
@@ -188,7 +188,9 @@
 </template>
 
 <script>
-import categories from '../../data/categories';
+import axios from 'axios';
+import API_BASE_URL from '@/config';
+// import categories from '../../data/categories';
 
 export default {
   name: 'product-filter',
@@ -199,20 +201,16 @@ export default {
       currentPriceFrom: 0,
       currentPriceTo: 0,
       currentColor: null,
+      categoriesData: [],
     };
   },
   computed: {
     categories() {
-      return categories;
+      return this.categoriesData ? this.categoriesData : [];
     },
-    // currentPriceFrom: {
-    //   get() {
-    //     return this.priceFrom;
-    //   },
-    //   set(value) {
-    //     this.$emit('update:priceFrom', value);
-    //   },
-    // },
+  },
+  created() {
+    this.loadCategories();
   },
   watch: {
     priceFrom(value) {
@@ -239,6 +237,12 @@ export default {
       this.$emit('update:priceFrom', 0);
       this.$emit('update:priceTo', 0);
       this.$emit('update:categoryId', 0);
+    },
+    loadCategories() {
+      axios.get(`${API_BASE_URL}/products/categories`)
+        .then((response) => {
+          this.categoriesData = response.data;
+        });
     },
   },
 };

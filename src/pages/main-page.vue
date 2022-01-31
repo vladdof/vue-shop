@@ -30,7 +30,8 @@
 </template>
 
 <script>
-import products from '../data/products';
+import axios from 'axios';
+import API_BASE_URL from '@/config';
 import Pagination from '../components/pagination/pagination.vue';
 import ProductList from '../components/product-list/product-list.vue';
 import ProductFilter from '../components/product-filter/product-filter.vue';
@@ -45,25 +46,28 @@ export default {
   data() {
     return {
       page: 1,
-      productsPerPage: 3,
+      productsPerPage: 6,
       filterPriceFrom: 0,
       filterPriceTo: 0,
       filterCategoryId: 0,
       filterColor: null,
+      productsData: null,
     };
+  },
+  created() {
+    this.loadProducts();
   },
   computed: {
     products() {
       // start for slice
       const offset = (this.page - 1) * this.productsPerPage;
-
       return this.filterProducts.slice(offset, offset + this.productsPerPage);
     },
     getProductsLength() {
       return this.filterProducts.length;
     },
     filterProducts() {
-      let filterProducts = products;
+      let filterProducts = this.productsData ? this.productsData : [];
 
       if (this.filterPriceFrom > 0) {
         filterProducts = filterProducts
@@ -86,6 +90,14 @@ export default {
       }
 
       return filterProducts;
+    },
+  },
+  methods: {
+    loadProducts() {
+      axios.get(`${API_BASE_URL}/products`)
+        .then((response) => {
+          this.productsData = response.data;
+        });
     },
   },
 };
