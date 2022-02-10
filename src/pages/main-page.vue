@@ -79,9 +79,9 @@ export default {
           .filter((product) => product.price > this.filterPriceTo);
       }
 
-      if (this.filterCategoryId > 0) {
+      if (this.filterCategoryId.length) {
         filterProducts = filterProducts
-          .filter((product) => product.categoryId === this.filterCategoryId);
+          .filter((product) => product.category === this.filterCategoryId);
       }
 
       if (this.filterColor) {
@@ -94,10 +94,28 @@ export default {
   },
   methods: {
     loadProducts() {
-      axios.get(`${API_BASE_URL}/products`)
-        .then((response) => {
-          this.productsData = response.data;
-        });
+      clearTimeout(this.loadProductsTimer);
+
+      this.loadProductsTimer = setTimeout(() => {
+        axios.get(`${API_BASE_URL}/products`)
+          .then((response) => {
+            this.productsData = response.data;
+          });
+      }, 0);
+    },
+  },
+  watth: {
+    page() {
+      this.loadProducts();
+    },
+    filterPriceFrom() {
+      this.loadProducts();
+    },
+    filterPriceTo() {
+      this.loadProducts();
+    },
+    filterCategoryId() {
+      this.loadProducts();
     },
   },
 };
