@@ -18,6 +18,14 @@
       />
 
       <section class="catalog">
+        <div v-if="productsLoading">
+          Загрузка товаров...
+        </div>
+        <div v-if="productsLoadingFailed">
+          <p>Произошла ошибка загрузки товаров!</p>
+          <button @click.prevent="loadProducts">Попробовать еще раз</button>
+        </div>
+
         <product-list :products="products" />
         <pagination
           v-model="page"
@@ -30,8 +38,9 @@
 </template>
 
 <script>
-import axios from 'axios';
-import API_BASE_URL from '@/config';
+import { mapGetters, mapActions } from 'vuex';
+// import axios from 'axios';
+// import API_BASE_URL from '@/config';
 import Pagination from '../components/pagination/pagination.vue';
 import ProductList from '../components/product-list/product-list.vue';
 import ProductFilter from '../components/product-filter/product-filter.vue';
@@ -52,12 +61,16 @@ export default {
       filterCategoryId: 0,
       filterColor: null,
       productsData: null,
+      productsLoading: false,
+      productsLoadingFailed: false,
     };
   },
   created() {
     this.loadProducts();
   },
   computed: {
+    ...mapGetters(['productsDataInfo']),
+
     products() {
       // start for slice
       const offset = (this.page - 1) * this.productsPerPage;
@@ -93,18 +106,31 @@ export default {
     },
   },
   methods: {
-    loadProducts() {
-      clearTimeout(this.loadProductsTimer);
+    ...mapActions({ getProducts: 'loadProducts' }),
 
+    loadProducts() {
+      this.productsLoading = true;
+      this.productsLoadingFailed = false;
+
+      clearTimeout(this.loadProductsTimer);
       this.loadProductsTimer = setTimeout(() => {
-        axios.get(`${API_BASE_URL}/products`)
-          .then((response) => {
-            this.productsData = response.data;
+        // axios.get(`${API_BASE_URL}/products`)
+        //   .then((response) => {
+        //     this.productsData = response.data;
+        //     this.$store.commit('updateProductList', response.data);
+        //   })
+        this.getProducts()
+          .catch(() => {
+            this.productsLoadingFailed = true;
+          })
+          .then(() => {
+            this.productsData = this.productsDataInfo;
+            this.productsLoading = false;
           });
       }, 0);
     },
   },
-  watth: {
+  watch: {
     page() {
       this.loadProducts();
     },

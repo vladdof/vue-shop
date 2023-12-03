@@ -1,3 +1,4 @@
 module.exports = {
-  publicPath: '/vue-shop/',
+  publicPath: './',
+  // publicPath: '/vue-shop/',
 };

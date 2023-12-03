@@ -1,16 +1,16 @@
 <template>
-  <main class="content container">
+  <main class="content container" v-bind="c">
     <div class="content__top">
       <ul class="breadcrumbs">
         <li class="breadcrumbs__item">
-          <a class="breadcrumbs__link" href="index.html">
+          <a class="breadcrumbs__link" href="/">
             Каталог
           </a>
         </li>
         <li class="breadcrumbs__item">
-          <a class="breadcrumbs__link">
+          <router-link to="{ name: 'cart' }" class="breadcrumbs__link">
             Корзина
-          </a>
+          </router-link>
         </li>
       </ul>
 
@@ -18,7 +18,7 @@
         Корзина
       </h1>
       <span class="content__info">
-        3 товара
+        {{ products.length }} товара
       </span>
     </div>
 
@@ -26,11 +26,7 @@
       <form class="cart__form form" action="#" method="POST">
         <div class="cart__field">
           <ul class="cart__list">
-            <cart-item
-              v-for="item in products"
-              :key="item.productId"
-              :item="item"
-            />
+            <cart-item :items="products" />
           </ul>
         </div>
 
@@ -54,7 +50,7 @@
 <script>
 import { mapGetters } from 'vuex';
 import numberFormat from '@/helpers/numberFormat';
-import { CartItem } from '@/components/cart-item.vue';
+import { CartItem } from '@/components/cart';
 
 export default {
   name: 'cart-page',
@@ -69,6 +65,11 @@ export default {
       products: 'cartDetailProducts',
       totalPrice: 'cartTotalPrice',
     }),
+
+    c() {
+      console.log(this.products);
+      return this.products;
+    },
   },
 };
 </script>
